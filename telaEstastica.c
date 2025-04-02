@@ -146,32 +146,22 @@ int validarCodigo(Lista *L, int codigo)
     return -1;
 }
 
-int cadastrar_codigo(){
-    int *codigo;
-    codigo = malloc(sizeof(int));
-    do
-    {
-
-        gotoxy(07, 23);
-        printf("                                                 ");
+int cadastrarCodigo(Lista *L) {
+    int codigo;
+    do {
         gotoxy(42, 7);
-        scanf("%d", codigo);
-
-        if ((strlen(nome) == 1))
-        {
+        printf("                   ");
+        gotoxy(42, 7);
+        scanf("%d", &codigo);
+        
+        if(codigo <= 0) {
             gotoxy(07, 23);
-
-            printf("Nome do funcionario e obrigatorio.");
+            printf("Codigo invalido! Deve ser positivo.");
             getch();
-            gotoxy(07, 23);
-
-            printf("                                        ");
         }
-
-    } while ((strlen(nome) == 1));
-    return nome;
-}
-    
+    } while(codigo <= 0);
+    return codigo;
+} 
     
 }
 
@@ -360,8 +350,8 @@ void CadastrarFuncionario(Lista *L)
             gotoxy(42, 7);
             printf("                   ");
             gotoxy(42, 7);
-            funcionario.codigo = validarCodigo();
-            controle = validarCodigo(L, funcionario.codigo);
+            funcionario.codigo = cadastrarCodigo();
+            controle = cadastrarCodigo(L, funcionario.codigo);
             if(controle == 1)
             {
                 gotoxy(22, 21);
