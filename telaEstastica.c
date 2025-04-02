@@ -1,937 +1,128 @@
-/* Autor...: Felipe Souza
-   Data....: 05/03/2025
-   Objetivo: Criar uma folha de pagamento utilizando Lista Estatica */
+/* Autor....:Felipe souza de Jesus 
+   Data.....:26/03/2025
+   Objetivo.: Tela de cadastro de funcionarios
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
 #include <conio.h>
+#include <windows.h>
+#include <string.h>
+#define valor 50
+#define Max 12
 
-#define INICIO_ARRANJO 1
-#define MAX 10
+void gotoxy(int x, int y)
 
-// Definicao de estrutura de daddos
+{
+    COORD coord;
+    coord.X = (short)x;
+    coord.Y = (short)y;
+    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
+}
+
+void tela()
+{
+    int i;
+    system("cls");
+    printf("-------------------------------------------------------------------------------\n");
+    for (i = 0; i < 22; i++)
+    {
+        printf("|                                                                             |\n");
+    }
+    printf("-------------------------------------------------------------------------------\n");
+    gotoxy(28, 02);
+    printf("CADASTRO DE FUNCIONARIO");
+    gotoxy(01, 01);
+    printf("Autor..... Felipe Souza");
+    gotoxy(01, 02);
+    printf("Curso..... 2 ADS");
+    gotoxy(01, 03);
+    printf("Ano....... 2025");
+    gotoxy(00, 04);
+    printf("-------------------------------------------------------------------------------\n");
+    gotoxy(00, 20);
+    printf("-------------------------------------------------------------------------------\n");
+}
+
+void limpar()
+{
+    int i;
+    for (i = 0; i < 15; i++)
+    {
+        gotoxy(1, 05 + i);
+        printf("                                                                             ");
+    }
+    gotoxy(01, 21);
+    printf("                                                                             ");
+    gotoxy(01, 22);
+    printf("                                                                             ");
+}
+
+void telaFuncionario()
+{
+    gotoxy(23, 6);
+    printf("  CADASTRO FUNCIONARIO");
+    gotoxy(25, 8);
+    printf("Insira o nome.....:");
+    gotoxy(25, 9);
+    printf("Insira o endereco.:");
+    gotoxy(25, 10);
+    printf("Insira o codigo...:");
+    gotoxy(25, 11);
+    printf("Insira o salario..:");
+}
+
+int menuOpcao()
+{
+    int resp;
+    system("cls");
+    tela();
+    gotoxy(31, 06);
+    printf("MENU OPCOES");
+    gotoxy(25, 8);
+    printf("1-Cadastrar Funcionario");
+    gotoxy(25, 9);
+    printf("2-Consultar Funcionario");
+    gotoxy(25, 10);
+    printf("3-Editar Funcionario");
+    gotoxy(25, 11);
+    printf("4-Excluir usuario");
+    gotoxy(25, 12);
+    printf("5-Sair\n");
+    gotoxy(01, 21);
+    printf("Escolha uma opcao....");
+    gotoxy(25, 21);
+    scanf("%d", &resp);
+
+    return resp;
+}
 
 typedef struct
 {
+    char nome[valor];
+    char endereco[valor];
     int codigo;
-    char nome[50];
-    char endereco[50];
-    char cargo[50];
-    char dt_admissao[11];
-    char telefone[15];
     float salario;
 } reg_funcionario;
 
 typedef struct
 {
-    reg_funcionario func[MAX];
+    reg_funcionario func[Max];
     int inicio;
-    int fim;
+    int final;
 } Lista;
 
-void inicializar_lista(Lista *L)
+// Inicializar lista
+void inicializaLista(Lista *L)
 {
-    int i;
-    L->inicio = INICIO_ARRANJO;
-    L->fim = L->inicio;
-    for (i = 0; i < MAX; i++)
+    L->inicio = 0;
+    L->final = 0;
+    for (int i = 0; i < Max; i++)
     {
-        L->func[i].codigo = 0;
         L->func[i].nome[0] = '\0';
         L->func[i].endereco[0] = '\0';
-        L->func[i].cargo[0] = '\0';
-        L->func[i].dt_admissao[0] = '\0';
-        L->func[i].telefone[0] = '\0';
         L->func[i].salario = 0;
-    }
-}
-void gotoxy(int x, int y)
-{
-
-    COORD coord;
-
-    coord.X = (short)x;
-    coord.Y = (short)y;
-
-    SetConsoleCursorPosition(GetStdHandle(STD_OUTPUT_HANDLE), coord);
-}
-
-void imprimir_linha(int linha)
-{
-    int i;
-
-    gotoxy(01, linha);
-    printf("+");
-
-    gotoxy(01, linha);
-    for (i = 2; i < 80; i++)
-    {
-        gotoxy(i, linha);
-        printf("-");
-    }
-
-    gotoxy(80, linha);
-    printf("+");
-}
-
-void tela()
-{
-
-    int i;
-    system("cls");
-    imprimir_linha(1);
-    gotoxy(03, 03);
-    printf("Instituicao...: Unicv");
-
-    gotoxy(03, 02);
-    printf("Autor.........: Felipe");
-
-    gotoxy(50, 02);
-    printf("Data....: 05-03-2025");
-
-    gotoxy(50, 03);
-    printf("SISTEMA DE FOLHA DE PAGAMENTO");
-    gotoxy(02, 23);
-    printf("MSG.:");
-
-    for (i = 2; i < 24; i++)
-    {
-
-        gotoxy(01, i);
-        printf("|");
-
-        gotoxy(80, i);
-        printf("|");
-    }
-    imprimir_linha(4);
-    imprimir_linha(22);
-
-    imprimir_linha(24);
-}
-void tela_funcionario()
-{
-    system("cls");
-    tela();
-    gotoxy(10, 7);
-    printf("0 - Digite o codigo...........:                 ");
-    gotoxy(10, 9);
-    printf("1 - Nome......................:                 ");
-    gotoxy(10, 11);
-    printf("2 - Endereco..................:                 ");
-    gotoxy(10, 13);
-    printf("3 - Cargo.....................:                 ");
-    gotoxy(10, 15);
-    printf("4 - Data de admissao..........:                 ");
-    gotoxy(10, 17);
-    printf("5 - Telefone..................:                 ");
-    gotoxy(10, 19);
-    printf("6 - Salario...................:                 ");
-}
-
-// Funcao para inserir um funcionario na lista
-
-// Funcao que pesquisa um funcionario na lista
-int validarCodigo(Lista *L, int codigo)
-{
-    int i;
-
-    for (i = 0; i < L->fim; i++)
-    {
-        if (L->func[i].codigo == codigo)
-        {
-            return i;
-        }
-    }
-    return -1;
-}
-
-int cadastrarCodigo(Lista *L) {
-    int codigo;
-    do {
-        gotoxy(42, 7);
-        printf("                   ");
-        gotoxy(42, 7);
-        scanf("%d", &codigo);
-        
-        if(codigo <= 0) {
-            gotoxy(07, 23);
-            printf("Codigo invalido! Deve ser positivo.");
-            getch();
-        }
-    } while(codigo <= 0);
-    return codigo;
-} 
-    
-}
-
-char *validarNome()
-{
-    char *nome;
-    nome = malloc(sizeof(char) * 50);
-    do
-    {
-
-        gotoxy(07, 23);
-        printf("                                                 ");
-        gotoxy(42, 9);
-        fflush(stdin);
-        fgets(nome, 50, stdin);
-
-        if ((strlen(nome) == 1))
-        {
-            gotoxy(07, 23);
-
-            printf("Nome do funcionario e obrigatorio.");
-            getch();
-            gotoxy(07, 23);
-
-            printf("                                        ");
-        }
-
-    } while ((strlen(nome) == 1));
-    return nome;
-}
-
-char *validarEndereco()
-{
-    char *endereco;
-    endereco = malloc(sizeof(char) * 50);
-    do
-    {
-
-        gotoxy(07, 23);
-        printf("                                                 ");
-        gotoxy(42, 11);
-        fflush(stdin);
-        fgets(endereco, 50, stdin);
-
-        if ((strlen(endereco) == 1) )
-        {
-            gotoxy(07, 23);
-
-            printf("Endereco do funcionario e obrigatorio.");
-            getch();
-            gotoxy(07, 23);
-
-            printf("                                        ");
-        }
-
-    } while ((strlen(endereco) == 1) );
-    return endereco;
-}
-
-char *validarCargo()
-{
-    char *cargo;
-    cargo = malloc(sizeof(char) * 50);
-    do
-    {
-
-        gotoxy(07, 23);
-        printf("                                                 ");
-        gotoxy(42, 13);
-        fflush(stdin);
-        fgets(cargo, 50, stdin);
-
-        if ((strlen(cargo) == 1) )
-        {
-            gotoxy(07, 23);
-
-            printf("Cargo do funcionario e obrigatorio.");
-            getch();
-            gotoxy(07, 23);
-
-            printf("                                        ");
-        }
-
-    } while ((strlen(cargo) == 1) );
-    return cargo;
-}
-
-char *validarData()
-{
-    char *dt_adimissao;
-    dt_adimissao = malloc(sizeof(char) * 50);
-    do
-    {
-
-        gotoxy(07, 23);
-        printf("                                                 ");
-        gotoxy(42, 15);
-        fflush(stdin);
-        fgets(dt_adimissao, 50, stdin);
-
-        if ((strlen(dt_adimissao) == 1) )
-        {
-            gotoxy(07, 23);
-
-            printf("Data de admissao do funcionario e obrigatorio.");
-            getch();
-            gotoxy(07, 23);
-
-            printf("                                        ");
-        }
-
-    } while ((strlen(dt_adimissao) == 1) );
-    return dt_adimissao;
-}
-
-char *validarTelefone()
-{
-    char *telefone;
-    telefone = malloc(sizeof(char) * 50);
-    do
-    {
-
-        gotoxy(07, 23);
-        printf("                                                 ");
-        gotoxy(42, 17);
-        fflush(stdin);
-        fgets(telefone, 50, stdin);
-
-        if ((strlen(telefone) == 1) )
-        {
-            gotoxy(07, 23);
-
-            printf("Telefone do funcionario e obrigatorio.");
-            getch();
-            gotoxy(07, 23);
-
-            printf("                                        ");
-        }
-
-    } while ((strlen(telefone) == 1));
-    return telefone;
-}
-
-float validarSalario()
-{
-    float *salario;
-    salario = malloc(sizeof(float));
-    do
-    {
-
-        gotoxy(07, 23);
-        printf("                                                 ");
-        gotoxy(42, 19);
-        scanf("%f", salario);
-
-        if (salario == 0)
-        {
-            gotoxy(07, 23);
-
-            printf("Nome do funcionario e obrigatorio.");
-            getch();
-            gotoxy(07, 23);
-
-            printf("                                        ");
-        }
-
-    } while (salario == 0);
-    return *salario;
-}
-void CadastrarFuncionario(Lista *L)
-{
-    reg_funcionario funcionario;
-    int resp;
-    int controle;
-    
-
-    do
-    {
-        gotoxy(22, 21);
-        printf("                                        ");
-        tela();
-        tela_funcionario();
-
-        do
-        {
-            gotoxy(42, 7);
-            printf("                   ");
-            gotoxy(42, 7);
-            funcionario.codigo = cadastrarCodigo();
-            controle = cadastrarCodigo(L, funcionario.codigo);
-            if(controle == 1)
-            {
-                gotoxy(22, 21);
-                printf("                                      ");
-                gotoxy(22, 21);
-                printf("CODIGO JA CADASTRADO");
-            }
-            else
-            {
-                gotoxy(22, 21);
-                printf("                                    ");
-            }
-        } while (controle == 1);
-
-        strcpy(funcionario.nome,validarNome());
-
-        strcpy(funcionario.endereco,validarEndereco());
-
-        strcpy(funcionario.cargo,validarCargo());
-
-        strcpy(funcionario.dt_admissao,validarData());
-
-
-        strcpy(funcionario.telefone,validarTelefone());
-
-        funcionario.salario = validarSalario();
-
-        gotoxy(02, 23);
-        printf("Quer confirmar o cadastro (1-Sim 2-Nao)....");
-        scanf("%d", &resp);
-
-        if (resp == 1)
-        {
-            L->func[L->fim] = funcionario;
-            L->fim++;
-
-            gotoxy(22, 21);
-            printf("Funcionario cadastrado com sucesso.");
-        }
-        else
-        {
-            gotoxy(22, 21);
-            printf("Cadastro cancelado.");
-        }
-
-        gotoxy(02, 23);
-        printf("                                                   ");
-        gotoxy(02, 23);
-        printf("Quer cadastrar outro funcionario (1- Sim 2-Nao)");
-        gotoxy(50, 23);
-        scanf("%d", &resp);
-    } while (resp == 1);
-    gotoxy(02, 23);
-    printf("                                                   ");
-}
-
-// Tela de alterar funcionario
-void alterarFuncionario(Lista *L)
-{
-    int codigo, pos, resp;
-    reg_funcionario funcionario;
-    
-
-    do
-    {
-        tela();
-
-        // Solicita o código do funcionário
-        gotoxy(02, 23);
-        printf("Digite o codigo do funcionario: ");
-        scanf("%d", &codigo);
-        gotoxy(02, 23);
-        printf("                                                   ");
-
-        // Verifica se o funcionário existe
-        pos = validarCodigo(L, codigo);
-        if (pos == -1)
-        {
-            gotoxy(07, 23);
-            printf("Funcionario nao encontrado.");
-            getch();
-            return; // Sai da função se o funcionário não for encontrado
-        }
-
-        // Exibe as informações atuais do funcionário
-        gotoxy(10, 7);
-        printf("=== Informacoes Atuais do Funcionario ===");
-        gotoxy(10, 9);
-        printf("Codigo...........: %d", L->func[pos].codigo);
-        gotoxy(10, 11);
-        printf("Nome.............: %s", L->func[pos].nome);
-        gotoxy(10, 13);
-        printf("Endereco.........: %s", L->func[pos].endereco);
-        gotoxy(10, 15);
-        printf("Cargo............: %s", L->func[pos].cargo);
-        gotoxy(10, 17);
-        printf("Data de Admissao.: %s", L->func[pos].dt_admissao);
-        gotoxy(10, 19);
-        printf("Telefone.........: %s", L->func[pos].telefone);
-        gotoxy(10, 21);
-        printf("Salario..........: %.2f", L->func[pos].salario);
-
-        // Pergunta se o usuário deseja editar as informações
-        gotoxy(02, 23);
-        printf("Deseja editar as informacoes do funcionario? (1 - Sim / 2 - Nao): ");
-        scanf("%d", &resp);
-        gotoxy(02, 23);
-        printf("                                                   ");
-
-        if (resp == 1)
-        {
-            tela_funcionario();
-            gotoxy(22, 5);
-            printf("======== Novas Informacoes do Funcionario ========");
-
-            // Solicita as novas informações do funcionário
-            gotoxy(42, 7);
-            scanf("%d", &funcionario.codigo);
-
-            gotoxy(42, 9);
-            fflush(stdin);
-            fgets(funcionario.nome, 50, stdin);
-
-            gotoxy(42, 11);
-            fflush(stdin);
-            fgets(funcionario.endereco, 50, stdin);
-
-            gotoxy(42, 13);
-            fflush(stdin);
-            fgets(funcionario.cargo, 50, stdin);
-
-            gotoxy(42, 15);
-            fgets(funcionario.dt_admissao, 11, stdin);
-
-            gotoxy(42, 17);
-            fflush(stdin);
-            fgets(funcionario.telefone, 15, stdin);
-
-            gotoxy(42, 19);
-            fflush(stdin);
-            scanf("%f", &funcionario.salario);
-
-            // Atualiza a lista com as novas informações
-            L->func[pos] = funcionario;
-
-            gotoxy(22, 21);
-            printf("Informacoes alteradas com sucesso.");
-        }
-
-        // Pergunta se o usuário deseja verificar as novas informações
-        gotoxy(02, 23);
-        printf("Deseja verificar as novas informacoes do funcionario? (1 - Sim / 2 - Nao): ");
-        scanf("%d", &resp);
-        gotoxy(02, 23);
-        printf("                                                   ");
-
-        if (resp == 1)
-        {
-            tela();
-            gotoxy(10, 7);
-            printf("=== Informacoes Atuais do Funcionario ===");
-            gotoxy(10, 9);
-            printf("Codigo...........: %d", L->func[pos].codigo);
-            gotoxy(10, 11);
-            printf("Nome.............: %s", L->func[pos].nome);
-            gotoxy(10, 13);
-            printf("Endereco.........: %s", L->func[pos].endereco);
-            gotoxy(10, 15);
-            printf("Cargo............: %s", L->func[pos].cargo);
-            gotoxy(10, 17);
-            printf("Data de Admissao.: %s", L->func[pos].dt_admissao);
-            gotoxy(10, 19);
-            printf("Salario..........: %.2f", L->func[pos].salario);
-
-            gotoxy(10, 23);
-            printf("Pressione qualquer tecla para continuar...");
-            getch();
-        }
-
-        // Pergunta se o usuário deseja voltar ao menu
-        gotoxy(02, 23);
-        printf("                                                   ");
-        gotoxy(02, 23);
-        printf("Voltar para o menu? (1-Sim 2-Nao).....");
-        scanf("%d", &resp);
-
-    } while (resp != 1); // Sai do loop se o usuário escolher voltar ao menu
-}
-
-void consultar_codigo(Lista *L)
-{
-    int pos, resp;
-    reg_funcionario reg_func;
-
-    do
-    {
-        tela();
-
-        gotoxy(10, 07);
-        printf("Digite o codigo do funcionario (0 para sair):");
-        gotoxy(56, 07);
-        printf("             "); // Limpa o campo anterior
-        gotoxy(55, 07);
-        scanf("%d", &reg_func.codigo);
-
-        // Verifica se o usuário quer sair
-        if (reg_func.codigo == 0)
-        {
-            break;
-        }
-
-        pos = validarCodigo(L, reg_func.codigo);
-        if (pos == -1)
-        {
-            gotoxy(07, 23);
-            printf("Codigo nao encontrado! Pressione qualquer tecla para continuar...");
-            getch();
-        }
-        else
-        {
-            tela();
-            reg_func = L->func[pos];
-            gotoxy(10, 7);
-            printf("Codigo...........: %d", reg_func.codigo);
-            gotoxy(10, 9);
-            printf("Nome.............: %s", reg_func.nome);
-            gotoxy(10, 11);
-            printf("Endereco.........: %s", reg_func.endereco);
-            gotoxy(10, 13);
-            printf("Cargo............: %s", reg_func.cargo);
-            gotoxy(10, 15);
-            printf("Data de Admissao.: %s", reg_func.dt_admissao);
-            gotoxy(10, 17);
-            printf("Telefone.........: %s", reg_func.telefone);
-            gotoxy(10, 19);
-            printf("Salario..........: %.2f", reg_func.salario);
-
-            gotoxy(07, 23);
-            printf("Pressione qualquer tecla para continuar...");
-            getch();
-        }
-
-        gotoxy(07, 23);
-        printf("Deseja consultar outro funcionario? (1 - Sim / 2 - Nao) ");
-        scanf("%d", &resp);
-        gotoxy(07, 23);
-        printf("                                                                   ");
-
-    } while (resp == 1);
-}
-
-void consultar_todos(Lista *L)
-{
-
-    int i;
-
-    reg_funcionario reg_func;
-
-    for (i = 0; i < L->fim; i++)
-    {
-        tela();
-        tela_funcionario();
-
-        reg_func = L->func[i];
-
-        gotoxy(42, 7);
-        printf("%d", reg_func.codigo);
-
-        gotoxy(42, 9);
-        printf("%s", reg_func.nome);
-
-        gotoxy(42, 11);
-        printf("%s", reg_func.endereco);
-
-        gotoxy(42, 13);
-        printf("%s", reg_func.cargo);
-
-        gotoxy(42, 15);
-        printf("%s", reg_func.dt_admissao);
-
-        gotoxy(42, 17);
-        printf("%s", reg_func.telefone);
-
-        gotoxy(42, 19);
-        printf("%.2f", reg_func.salario);
-
-        gotoxy(07, 23);
-        printf("Use as setas para navegar, Enter para sair.");
-
-        int ch = getch();
-
-        if (ch == 0 || ch == 224)
-        {
-
-            switch (getch())
-            {
-
-            case 75: // Seta para esquerda
-                if (i == 0)
-                {
-
-                    i = i - 1;
-                }
-                else
-                {
-                    i = i - 2;
-                }
-                break;
-
-            case 77: // seta para direita
-                break;
-            }
-        }
-        else if (ch == 13)
-        {
-            break;
-        }
-
-    }
-    gotoxy(07, 23);
-    printf("                                                                   ");
-
-}
-
-void ordenar_codigo(Lista *L)
-{
-    int i;
-    int j;
-    reg_funcionario aux;
-    for (i = 0; i < L->fim - 1; i++)
-    {
-        for (j = i + 1; j < L->fim; j++)
-        {
-            if (L->func[i].codigo > L->func[j].codigo)
-            {
-                aux = L->func[i];
-                L->func[i] = L->func[j];
-                L->func[j] = aux;
-            }
-        }
-    }
-}
-void ordenar_nome(Lista *L)
-{
-    int i;
-    int j;
-    reg_funcionario aux;
-    for (i = 0; i < L->fim - 1; i++)
-    {
-        for (j = i + 1; j < L->fim; j++)
-        {
-            if (strcmp(L->func[i].nome, L->func[j].nome) > 0)
-            {
-                aux = L->func[i];
-                L->func[i] = L->func[j];
-                L->func[j] = aux;
-            }
-        }
-    }
-}
-
-void consultar_lista(Lista *L, int opc)
-{
-
-    int i;
-    int lin = 7;
-
-    if (opc == 3)
-    {
-        ordenar_codigo(L);
-    }
-    else
-    {
-        ordenar_nome(L);
-    }
-
-    reg_funcionario reg_func;
-
-    for (i = 1; i < L->fim; i++)
-    {
-        if (lin == 7)
-        {
-            tela();
-            gotoxy(15, 03);
-            if (opc == 3)
-            {
-                ordenar_codigo(L);
-                printf("LISTA FUNCIONARIO - ORDENADO POR CODIGO");
-            }
-            else
-            {
-                ordenar_nome(L);
-                printf("LISTA FUNCIONARIO - ORDENADO POR NOME");
-            }
-
-            gotoxy(02, 05);
-            printf("Cd   Nome do funcionario                Cargo         dta.Admis     Salario");
-            gotoxy(02, 06);
-            printf("--   ---------------------------      ------------    --------------  --------");
-        }
-
-        reg_func = L->func[i];
-        gotoxy(02, lin);
-        printf("%d", reg_func.codigo);
-        gotoxy(10, lin);
-        printf("%s", reg_func.nome);
-        gotoxy(45, lin);
-        printf("%s", reg_func.cargo);
-        gotoxy(59, lin);
-        printf("%s", reg_func.dt_admissao);
-        gotoxy(70, lin);
-        printf("%9.2f", reg_func.salario);
-        lin++;
-
-        if (lin > 22)
-        {
-
-            gotoxy(07, 23);
-            printf("Pressione uma tecla para continuar...");
-            getch();
-            lin = 7;
-        }
-    }
-    gotoxy(07, 23);
-    printf("                                                     ");
-    gotoxy(07, 23);
-    printf("Fim da lista. ");
-    getch();
-}
-
-void menu_consulta(Lista *L)
-{
-    int opc;
-    do
-    {
-        tela();
-        gotoxy(28, 03);
-        printf("MENU CONSULTAR FUNCIONARIO");
-        gotoxy(30, 10);
-        printf("1 - Consulta por Codigo");
-
-        gotoxy(30, 12);
-        printf("2 - Consultar Fichario Completo");
-
-        gotoxy(30, 14);
-        printf("3 - Consulta Lista por Codigo");
-
-        gotoxy(30, 16);
-        printf("4 - Consulta Lista por Nome");
-
-        gotoxy(30, 18);
-        printf("5 - Voltar Menu Principal");
-
-        gotoxy(02, 23);
-        printf("Escolha uma opcao: ");
-        scanf("%d", &opc);
-        gotoxy(02, 23);
-        printf("                                                   ");
-        switch (opc)
-        {
-        case 1:
-            consultar_codigo(L); // Consulta por nome
-            break;
-        case 2:
-            consultar_todos(L); // Consulta por código
-            break;
-        case 3:
-            consultar_lista(L, opc); // Consulta ordenada por código
-            break;
-        case 4:
-            consultar_lista(L, opc);
-            break;
-
-        default:
-            break;
-        }
-        gotoxy(02, 23);
-        printf("Pressione qualquer tecla para continuar...");
-        getch();
-
-    } while (opc != 5);
-}
-
-void ExcluirFuncionario(Lista *L)
-{
-    int pos, resp;
-    reg_funcionario reg_func;
-
-    do
-    {
-        tela();
-
-        // Solicita o código do funcionário
-        gotoxy(02, 23);
-        printf("Digite o codigo do funcionario a ser excluido: ");
-        scanf("%d", &reg_func.codigo);
-        gotoxy(02, 23);
-        printf("                                                   ");
-
-        // Verifica se o funcionário existe
-        pos = validarCodigo(L, reg_func.codigo);
-        if (pos == -1)
-        {
-            gotoxy(07, 23);
-            printf("Funcionario nao encontrado.");
-            getch();
-            return; // Sai da função se o funcionário não for encontrado
-        }
-        else
-        {
-
-            // Exibe as informações do funcionário
-            gotoxy(10, 7);
-            printf("=== Informacoes do Funcionario a Ser Excluido ===");
-            gotoxy(10, 9);
-            printf("Codigo...........: %d", L->func[pos].codigo);
-            gotoxy(10, 11);
-            printf("Nome.............: %s", L->func[pos].nome);
-            gotoxy(10, 13);
-            printf("Endereco.........: %s", L->func[pos].endereco);
-            gotoxy(10, 15);
-            printf("Cargo............: %s", L->func[pos].cargo);
-            gotoxy(10, 17);
-            printf("Data de Admissao.: %s", L->func[pos].dt_admissao);
-            gotoxy(10, 19);
-            printf("Telefone.........: %s", L->func[pos].telefone);
-            gotoxy(10, 21);
-            printf("Salario..........: %.2f", L->func[pos].salario);
-        }
-
-        // Pergunta se o usuário deseja realmente excluir o funcionário
-        gotoxy(02, 23);
-        printf("Deseja realmente excluir este funcionario? (1 - Sim / 2 - Nao): ");
-        scanf("%d", &resp);
-        gotoxy(02, 23);
-        printf("                                                                     ");
-
-        if (resp == 1)
-        {
-            // Remove o funcionário da lista
-            for (int i = pos; i < L->fim - 1; i++)
-            {
-                L->func[i] = L->func[i + 1]; // Desloca os elementos para a esquerda
-            }
-            L->fim--; // Atualiza o fim da lista
-
-            gotoxy(22, 21);
-            printf("                                                                ");
-            gotoxy(22, 21);
-            printf("Funcionario excluido com sucesso.");
-        }
-        else
-        {
-            gotoxy(22, 21);
-            printf("Exclusao cancelada.");
-        }
-
-        gotoxy(07, 23);
-        printf("Deseja excluir outro Funcionario? (1 - Sim / 2 - Nao)");
-        scanf("%d", &resp);
-        gotoxy(07, 23);
-        printf("                                                                     ");
-        getch();
-    } while (resp == 1);
-}
-
-
-void Sair()
-{
-    tela();
-    gotoxy(07, 23);
-    printf("Deseja realmente sair? (1 - Sim / 2 - Nao): ");
-    int resp;
-    scanf("%d", &resp);
-
-    if (resp == 1)
-    {
-        gotoxy(02, 23);
-        printf("Saindo do sistema...");
-        exit(0); // Encerra o programa
+        L->func[i].codigo = 0;
     }
 }
 
@@ -956,8 +147,8 @@ void salvarUsuario(Lista *L)
 
     fclose(file);
 }
-//Le os funcionarios de um arquivo
- void carregarFuncionario(Lista *L)
+
+void carregarFuncionario(Lista *L)
 {
     FILE *file = fopen("funcionarios.txt", "r");
     if (file == NULL)
@@ -981,75 +172,527 @@ void salvarUsuario(Lista *L)
     }
     fclose(file);
 }
-int telaEscolha()
-{
-    int opcao;
-    tela();
-    gotoxy(25, 10);
-    printf("1 - Cadastrar Funcionario");
-    gotoxy(25, 12);
-    printf("2 - Alterar Funcionarios");
-    gotoxy(25, 14);
-    printf("3 - Excluir funcinario");
-    gotoxy(25, 16);
-    printf("4 - Menu de consulta");
-    gotoxy(25, 18);
-    printf("5 - Sair");
-    gotoxy(25, 20);
 
-    // Escolher a opcao do menu
-    gotoxy(07, 23);
-    printf(" Digite a sua opcao: ");
-    scanf("%d", &opcao);
-    return opcao;
-    return 0;
+int validarCodigo(Lista *L, int codigo)
+{
+    for (int i = 0; i < L->final; i++)
+    {
+        if (L->func[i].codigo == codigo)
+        {
+            return -1;
+        }
+    }
+    return 1;
+}
+
+void cadastrarFuncionario(Lista *L)
+{
+    reg_funcionario funcionario;
+    int reiniciar, confirma, validar;
+
+    do
+    {
+        limpar();
+        telaFuncionario();
+        if (L->final >= Max)
+        {
+            gotoxy(25, 12);
+            printf("LISTA CHEIA");
+            break;
+        }
+
+        gotoxy(20, 19);
+        printf("Digite sair para nao cadastrar");
+        // Nome
+        gotoxy(45, 8);
+        fflush(stdin);
+        fgets(funcionario.nome, valor, stdin);
+
+        if (strcmp(funcionario.nome, "sair\n") == 0)
+        {
+            return;
+        }
+
+        // endereco
+        gotoxy(45, 9);
+        fflush(stdin);
+        fgets(funcionario.endereco, valor, stdin);
+
+        if (strcmp(funcionario.endereco, "sair\n") == 0)
+        {
+            return;
+        }
+        
+            do
+        {
+            // codigo
+            do
+            {
+                gotoxy(45, 10);
+                printf("                    ");
+                gotoxy(45, 10);
+                scanf("%d", &funcionario.codigo);
+                if (funcionario.codigo <= 0)
+                {
+                    gotoxy(20, 19);
+                    printf("                                         ");
+                    gotoxy(20, 18);
+                    printf("Impossivel cadastrar codigo menor que 0");
+                    gotoxy(23, 19);
+                    printf("Precione uma tecla para continuar");
+
+                    getch();
+                    gotoxy(18, 18);
+                    printf("                                                          ");
+                    gotoxy(18, 19);
+                    printf("                                                          ");
+                }
+            } while (funcionario.codigo <= 0);
+
+            validar = validarCodigo(L, funcionario.codigo);
+
+            if (validar != 1)
+            {
+                gotoxy(25, 19);
+                printf("Erro: Codigo ja cadastrado\n");
+            }
+        }
+        while (validar != 1)
+            ;
+
+        do
+        {
+            // salario
+            gotoxy(45, 11);
+            scanf("%f", &funcionario.salario);
+            if (funcionario.salario < 0)
+            {
+                gotoxy(45, 11);
+                printf("                               ");
+                gotoxy(25, 19);
+                printf("Salario invalido \n");
+            }
+        } while (funcionario.salario < 0);
+
+        gotoxy(01, 21);
+        printf("Confirmar cadastro (1-Sim 2-Nao)........... ");
+        gotoxy(48, 21);
+        scanf("%d", &confirma);
+
+        if (confirma == 1)
+        {
+            L->func[L->final] = funcionario;
+            L->final++;
+            salvarUsuario(L);
+        }
+
+        gotoxy(01, 21);
+        printf("Cadastrar outro funcionario (1-Sim 2-Nao).... ");
+        gotoxy(48, 21);
+        scanf("%d", &reiniciar);
+    } while (reiniciar == 1);
+}
+
+void mostrarLista(Lista *L)
+{
+    limpar();
+    gotoxy(25, 05);
+    printf("LISTA DE FUNCIONARIOS");
+    gotoxy(01, 07);
+    printf("Num)Nome                      |Salario       |Codigo      ");
+    for (int i = 0; i < L->final; i++)
+    {
+        gotoxy(02, 8 + i);
+        printf("%2d)%-20s\t%5.2f\t\t%5d", i + 1, L->func[i].nome, L->func[i].salario, L->func[i].codigo);
+    }
+}
+
+void mostrarUsuario(Lista *L, int resp)
+{
+    limpar();
+    gotoxy(30, 06);
+    printf("USUARIO CONSULTADO");
+    gotoxy(27, 10);
+    printf("Nome.....:%s", L->func[resp - 1].nome);
+    gotoxy(27, 12);
+    printf("Endereco.:%s", L->func[resp - 1].endereco);
+    gotoxy(27, 14);
+    printf("Salario..:%.2f", L->func[resp - 1].salario);
+    gotoxy(27, 16);
+    printf("Codigo...:%d", L->func[resp - 1].codigo);
+}
+
+void ordenar_Codigo(Lista *L)
+{
+    reg_funcionario temp;
+    int i, j;
+
+    for (i = 0; i < L->final - 1; i++)
+    {
+        for (j = 0; j < L->final - 1 - i; j++)
+        {
+            if (L->func[j].codigo > L->func[j + 1].codigo)
+            {
+                temp.codigo = L->func[j].codigo;
+                L->func[j].codigo = L->func[j + 1].codigo;
+                L->func[j + 1].codigo = temp.codigo;
+            }
+        }
+    }
+}
+
+void ordenar_Nome(Lista *L)
+{
+    int i;
+    int j;
+    reg_funcionario temp;
+
+    limpar();
+    for (i = 0; i < L->final - 1; i++)
+    {
+        for (j = 0; j < L->final - 1 - i; j++)
+        {
+            if (strcmp(L->func[j].nome, L->func[j + 1].nome) > 0)
+            {
+                strcpy(temp.nome, L->func[j].nome);
+                strcpy(L->func[j].nome, L->func[j + 1].nome);
+                strcpy(L->func[j + 1].nome, temp.nome);
+            }
+        }
+    }
+}
+
+void ordenar_Salario(Lista *L)
+{
+    int i;
+    int j;
+    reg_funcionario temp;
+
+    for (i = 0; i < L->final - 1; i++)
+    {
+        for (j = 0; j < L->final - 1 - i; j++)
+        {
+            if (L->func[j].salario < L->func[j + 1].salario)
+            {
+                temp.salario = L->func[j].salario;
+                L->func[j].salario = L->func[j + 1].salario;
+                L->func[j + 1].salario = temp.salario;
+            }
+        }
+    }
+}
+
+void opcaoOrdenacao(Lista *L)
+{
+    int consulta;
+    gotoxy(27, 06);
+    printf("TIPOS DE ORDENACAO");
+    gotoxy(22, 10);
+    printf("1) Ordem Alfabetica");
+    gotoxy(22, 12);
+    printf("2) Ordem codigo");
+    gotoxy(22, 14);
+    printf("3) Ordem Salario");
+
+    gotoxy(01, 21);
+    printf("Qual maneira voce quer ordenar...... ");
+    gotoxy(38, 21);
+    scanf("%d", &consulta);
+
+    switch (consulta)
+    {
+    case 1:
+        ordenar_Nome(L);
+        break;
+    case 2:
+        ordenar_Codigo(L);
+        break;
+    case 3:
+        ordenar_Salario(L);
+        break;
+    }
+}
+
+void editarCadastro(Lista *L)
+
+{
+    int num, resp, control;
+    reg_funcionario temp;
+
+    limpar();
+    if (L->inicio == L->final)
+    {
+        gotoxy(22, 12);
+        printf("NAO HA FUNCIONARIOS CADASTRADOS");
+        return;
+    }
+    opcaoOrdenacao(L);
+    mostrarLista(L);
+
+    gotoxy(01, 21);
+    printf("Deseja editar algum usuario? (1-Sim 2-Nao).....");
+    gotoxy(49, 21);
+    scanf("%d", &num);
+
+    if (num == 1)
+    {
+        do
+        {
+            gotoxy(01, 21);
+            printf("Qual usuario voce deseja editar..... ");
+            gotoxy(38, 21);
+            scanf("%d", &resp);
+            if (resp > L->final || resp < L->inicio)
+            {
+                gotoxy(20, 19);
+                printf("Consulte um usuario valido ou 0 para sair");
+            }
+            else if (resp == 0)
+            {
+                return;
+            }
+        } while (resp > L->final || resp < L->inicio);
+
+        mostrarUsuario(L, resp);
+        gotoxy(01, 21);
+        printf("Qual campo deseja editar?..... ");
+        gotoxy(32, 21);
+        scanf("%d", &control);
+        switch (control)
+        {
+        case 1:
+            limpar();
+            gotoxy(25, 12);
+            printf("Nome atual.....:%s", L->func[resp - 1].nome);
+            gotoxy(25, 14);
+            printf("Novo nome......:");
+            gotoxy(42, 14);
+            fflush(stdin);
+            fgets(temp.nome, 50, stdin);
+
+            strcpy(L->func[resp - 1].nome, temp.nome);
+            salvarUsuario(L);
+            break;
+        case 2:
+            limpar();
+            gotoxy(25, 12);
+            printf("Endereco atual.....:%s", L->func[resp - 1].endereco);
+            gotoxy(25, 14);
+            printf("Novo endereco......:");
+            gotoxy(46, 14);
+            fflush(stdin);
+            fgets(temp.endereco, 50, stdin);
+
+            strcpy(L->func[resp - 1].endereco, temp.endereco);
+            salvarUsuario(L);
+            break;
+
+        case 3:
+            limpar();
+            gotoxy(25, 12);
+            printf("Salario atual.....:%.2f", L->func[resp - 1].salario);
+            gotoxy(25, 14);
+            do
+            {
+                printf("Novo salario......:");
+                gotoxy(45, 14);
+                scanf("%f", &temp.salario);
+                if (temp.salario < 0)
+                {
+                    gotoxy(25, 19);
+                    printf("Insira um salario valido");
+                }
+                else
+                {
+                    gotoxy(25, 19);
+                    printf("Cadastrado com sucesso");
+                    L->func[resp - 1].salario = temp.salario;
+                }
+            } while (temp.salario < 0);
+            salvarUsuario(L);
+            break;
+
+        case 4:
+            limpar();
+            gotoxy(20, 19);
+            printf("Insira um codigo valido ou 0 para sair");
+            gotoxy(25, 12);
+            printf("Codigo atual.....:%d", L->func[resp - 1].codigo);
+
+            do
+            {
+                gotoxy(25, 14);
+                printf("Novo codigo......:");
+                gotoxy(44, 14);
+                scanf("%d", &temp.codigo);
+
+                if (validarCodigo(L, temp.codigo) == -1)
+                {
+
+                    gotoxy(20, 19);
+                    printf("                                           ");
+                    gotoxy(20, 19);
+                    printf("Codigo negado! Insira um codigo valido");
+                }
+                else if (temp.codigo == 0)
+                {
+                    return;
+                }
+
+            } while (validarCodigo(L, temp.codigo) == -1);
+
+            gotoxy(18, 19);
+            printf("                                               ");
+            gotoxy(23, 19);
+            printf("Cadastrado com sucesso");
+            L->func[resp - 1].codigo = temp.codigo;
+
+            salvarUsuario(L);
+            break;
+        }
+    }
+}
+
+void excluirCadastro(Lista *L)
+{
+    limpar();
+    int resp, temp, num;
+    if (L->inicio == L->final)
+    {
+        gotoxy(22, 12);
+        printf("NAO HA FUNCIONARIOS CADASTRADOS");
+        return;
+    }
+    opcaoOrdenacao(L);
+    mostrarLista(L);
+
+    gotoxy(01, 21);
+    printf("Deseja excluir algum usuario? (1-Sim 2-Nao).....");
+    gotoxy(50, 21);
+    scanf("%d", &resp);
+
+    if (resp == 1)
+    {
+        do
+        {
+            gotoxy(01, 21);
+            printf("Qual usuario voce deseja excluir?.... ");
+            gotoxy(38, 21);
+            scanf("%d", &temp);
+            if (temp < L->inicio || temp > L->final)
+            {
+                gotoxy(20, 19);
+                printf("Digite um usuario valido");
+            }
+        } while (temp < L->inicio || temp > L->final);
+        mostrarUsuario(L, temp);
+
+        gotoxy(01, 21);
+        printf("Confirmar exclusao? Essa acao nao pode ser revertida (1-Sim 2-Nao).... ");
+        gotoxy(72, 21);
+        scanf("%d", &num);
+        gotoxy(01, 21);
+        printf("                                                                            ");
+        if (num == 1)
+        {
+            gotoxy(23, 19);
+            printf("Excluido com sucesso");
+            for (int i = temp - 1; i < L->final - 1; i++)
+            {
+                L->func[i] = L->func[i + 1];
+            }
+            L->final--;
+            salvarUsuario(L);
+        }
+    }
+}
+
+void consultarCadastro(Lista *L)
+{
+    int resp;
+
+    limpar();
+    if (L->final == L->inicio)
+    {
+        gotoxy(20, 12);
+        printf("NAO HA FUNCIONARIOS CADASTRADOS");
+    }
+
+    opcaoOrdenacao(L);
+    mostrarLista(L);
+
+    gotoxy(01, 21);
+    printf("Deseja consultar algum funcionario (1-Sim 2-Nao)....              ");
+    gotoxy(53, 21);
+    scanf("%d", &resp);
+
+    if (resp != 1)
+    {
+        return;
+    }
+    do
+    {
+        gotoxy(25, 19);
+        printf("Digite -1 para sair");
+        gotoxy(01, 21);
+        printf("Qual o usuario voce deseja consultar?..... ");
+        gotoxy(44, 21);
+        scanf("%d", &resp);
+
+        if (resp == 0 || resp >= L->final)
+        {
+            gotoxy(25, 19);
+            printf("Digite um usuario valido");
+        }
+        else if (resp == -1)
+        {
+            return;
+        }
+
+    } while (resp <= L->inicio || resp >= L->final);
+    mostrarUsuario(L, resp);
 }
 
 int main()
 {
+    system("color 0a");
     Lista L;
-    int opcao, escolha;
-    inicializar_lista(&L);
+    inicializaLista(&L);
+    carregarFuncionario(&L);
+    int menu, reiniciar;
 
     do
     {
-        opcao = telaEscolha();
-        tela();
+        menu = menuOpcao();
 
-        switch (opcao)
+        switch (menu)
         {
         case 1:
-            CadastrarFuncionario(&L);
+            cadastrarFuncionario(&L);
             break;
         case 2:
-            alterarFuncionario(&L);
+            consultarCadastro(&L);
             break;
         case 3:
-            ExcluirFuncionario(&L); // Nova função
+            editarCadastro(&L);
             break;
         case 4:
-            menu_consulta(&L);
-            break;
-        case 5:
-            Sair(); // Nova função
+            excluirCadastro(&L);
             break;
 
         default:
-            gotoxy(07, 23);
-            printf("Opcao invalida! Tente novamente.");
-            getch();
-            break;
+            return 0;
         }
+        gotoxy(01, 21);
+        printf("Voltar para o menu (1-Sim 2-Nao)..... ");
+        gotoxy(39, 21);
+        scanf("%d", &reiniciar);
+    } while (reiniciar == 1);
 
-        gotoxy(02, 23);
-        printf("                                                   ");
-        gotoxy(02, 23);
-        printf("Voltar para o menu? (1-Sim 2-Nao).....");
-        gotoxy(41, 23);
-        scanf("%d", &escolha);
-        gotoxy(02, 23);
-        printf("                                                   ");
-    } while (escolha == 1);
+    limpar();
+    gotoxy(33, 12);
+    printf("ATE A PROXIMA!");
 
+    gotoxy(01, 25);
     return 0;
 }
