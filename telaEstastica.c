@@ -146,6 +146,35 @@ int validarCodigo(Lista *L, int codigo)
     return -1;
 }
 
+int cadastrar_codigo(){
+    int *codigo;
+    codigo = malloc(sizeof(int));
+    do
+    {
+
+        gotoxy(07, 23);
+        printf("                                                 ");
+        gotoxy(42, 7);
+        scanf("%d", codigo);
+
+        if ((strlen(nome) == 1))
+        {
+            gotoxy(07, 23);
+
+            printf("Nome do funcionario e obrigatorio.");
+            getch();
+            gotoxy(07, 23);
+
+            printf("                                        ");
+        }
+
+    } while ((strlen(nome) == 1));
+    return nome;
+}
+    
+    
+}
+
 char *validarNome()
 {
     char *nome;
@@ -183,11 +212,11 @@ char *validarEndereco()
 
         gotoxy(07, 23);
         printf("                                                 ");
-        gotoxy(42, 9);
+        gotoxy(42, 11);
         fflush(stdin);
         fgets(endereco, 50, stdin);
 
-        if ((strlen(endereco) == 1) && (strcmp(endereco, "0") == -1))
+        if ((strlen(endereco) == 1) )
         {
             gotoxy(07, 23);
 
@@ -198,7 +227,7 @@ char *validarEndereco()
             printf("                                        ");
         }
 
-    } while ((strlen(endereco) == 1) && (strcmp(endereco, "0") == -1));
+    } while ((strlen(endereco) == 1) );
     return endereco;
 }
 
@@ -211,11 +240,11 @@ char *validarCargo()
 
         gotoxy(07, 23);
         printf("                                                 ");
-        gotoxy(42, 9);
+        gotoxy(42, 13);
         fflush(stdin);
         fgets(cargo, 50, stdin);
 
-        if ((strlen(cargo) == 1) && (strcmp(cargo, "0") == -1))
+        if ((strlen(cargo) == 1) )
         {
             gotoxy(07, 23);
 
@@ -226,7 +255,7 @@ char *validarCargo()
             printf("                                        ");
         }
 
-    } while ((strlen(cargo) == 1) && (strcmp(cargo, "0") == -1));
+    } while ((strlen(cargo) == 1) );
     return cargo;
 }
 
@@ -239,11 +268,11 @@ char *validarData()
 
         gotoxy(07, 23);
         printf("                                                 ");
-        gotoxy(42, 9);
+        gotoxy(42, 15);
         fflush(stdin);
         fgets(dt_adimissao, 50, stdin);
 
-        if ((strlen(dt_adimissao) == 1) && (strcmp(dt_adimissao, "0") == -1))
+        if ((strlen(dt_adimissao) == 1) )
         {
             gotoxy(07, 23);
 
@@ -254,7 +283,7 @@ char *validarData()
             printf("                                        ");
         }
 
-    } while ((strlen(dt_adimissao) == 1) && (strcmp(dt_adimissao, "0") == -1));
+    } while ((strlen(dt_adimissao) == 1) );
     return dt_adimissao;
 }
 
@@ -267,11 +296,11 @@ char *validarTelefone()
 
         gotoxy(07, 23);
         printf("                                                 ");
-        gotoxy(42, 9);
+        gotoxy(42, 17);
         fflush(stdin);
         fgets(telefone, 50, stdin);
 
-        if ((strlen(telefone) == 1) && (strcmp(telefone, "0") == -1))
+        if ((strlen(telefone) == 1) )
         {
             gotoxy(07, 23);
 
@@ -282,7 +311,7 @@ char *validarTelefone()
             printf("                                        ");
         }
 
-    } while ((strlen(telefone) == 1) && (strcmp(telefone, "0") == -1));
+    } while ((strlen(telefone) == 1));
     return telefone;
 }
 
@@ -295,7 +324,7 @@ float validarSalario()
 
         gotoxy(07, 23);
         printf("                                                 ");
-        gotoxy(42, 9);
+        gotoxy(42, 19);
         scanf("%f", salario);
 
         if (salario == 0)
@@ -916,75 +945,51 @@ void Sair()
     }
 }
 
-void gravar_funcionario(Lista *L)
+void salvarUsuario(Lista *L)
 {
-
-    FILE *arq;
-    int i;
-    reg_funcionario reg_func;
-    arq = fopen("funcionarios.dat", "wb");
-    tela();
-    gotoxy(30, 03);
-    printf("Gravando Funcionarios...");
-    gotoxy(07, 23);
-    printf("Aguarde, gravando dados...");
-
-
-    if (arq == 0)
+    FILE *file = fopen("funcionarios.txt", "w");
+    if (file == NULL)
     {
-        gotoxy(07, 23);
-        printf("Erro ao abrir o arquivo.");
-        getch();
+        gotoxy(20, 19);
+        printf("Erro ao abrir o arquivo para escrita");
+        return;
     }
-    else
+
+    for (int i = 0; i < L->final; i++)
     {
-        for (i = 0; i < L->fim; i++)
-        {
-            fwrite(&L->func[i], sizeof(reg_funcionario), 1, arq);
-        }
-       
+        fprintf(file, "%d\n%s\n%s\n%.2f\n",
+                L->func[i].codigo,
+                L->func[i].nome,
+                L->func[i].endereco,
+                L->func[i].salario);
     }
-    fclose(arq);
 
-
-    gotoxy(07, 23);
-    printf("Funcionarios gravados com sucesso.");
-    getch();
-
+    fclose(file);
 }
 //Le os funcionarios de um arquivo
- void ler_funcionarios(Lista *L)
+ void carregarFuncionario(Lista *L)
 {
-    FILE *arq;
-    reg_funcionario reg_func;
-    int i;
-    arq = fopen("funcionarios.dat", "rb");
-    tela();
-    gotoxy(30, 03);
-    printf("Listando Funcionarios...");
-    gotoxy(07, 23);
-    printf("Aguarde, carregando dados...");
-
-    if (arq == NULL)
+    FILE *file = fopen("funcionarios.txt", "r");
+    if (file == NULL)
     {
-        gotoxy(07, 23);
-        printf("Erro ao abrir o arquivo.");
-        getch();
+        gotoxy(20, 19);
+        printf("Nenhum dado encontrado");
+        return;
     }
-    else
+
+    while (fscanf(file, "%d\n%49[^\n]\n%49[^\n]\n%f\n",
+                &L->func[L->final].codigo,
+                L->func[L->final].nome,
+                L->func[L->final].endereco,
+                &L->func[L->final].salario) == 4)
     {
-        i = 0;
-        while (fread(&L->func[i], sizeof(reg_funcionario), 1, arq) == 1)
+        L->final++;
+        if (L->final >= Max)
         {
-            i++;
+            break;
         }
-       L->fim = i;
-       fclose(arq);
     }
-    gotoxy(07, 23);
-    printf("Dados carregados com sucesso.");
-    getch();
-
+    fclose(file);
 }
 int telaEscolha()
 {
