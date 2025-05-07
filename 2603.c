@@ -178,8 +178,6 @@ void cadastrarCliente(TipoLista *L)
         fgets(novo->info.nr_telefone, 15, stdin);
         novo->info.nr_telefone[strcspn(novo->info.nr_telefone, "\n")] = 0;
 
-
-
         novo->ant = NULL;
         novo->prox = NULL;
 
@@ -210,81 +208,182 @@ void cadastrarCliente(TipoLista *L)
 
 void listarClientes(TipoLista *L)
 {
-    tela();
-    TipoApontador atual = L->primeiro;
-    int linha = 6;
+    int opcao, codigo, encontrou = 0;
 
-    if (atual == NULL)
+    tela();
+    gotoxy(10, 6);
+    printf("LISTAR CLIENTES");
+    gotoxy(10, 8);
+    printf("1 - Listar todos os clientes");
+    gotoxy(10, 10);
+    printf("2 - Buscar cliente por codigo");
+    gotoxy(10, 12);
+    printf("Opcao: ");
+    gotoxy(18, 12);
+    scanf("%d", &opcao);
+    fflush(stdin);
+
+    tela();
+
+    if (L->primeiro == NULL)
     {
-        gotoxy(10, linha);
+        gotoxy(10, 6);
         printf("Nenhum cliente cadastrado!");
         getch();
         return;
     }
 
-    gotoxy(10, linha++);
-    printf("LISTA DE CLIENTES");
-    linha++;
-
-    while (atual != NULL)
+    if (opcao == 1)
     {
-        gotoxy(10, linha++);
-        printf("Codigo: %d", atual->info.cd_cliente);
+        // Listar todos os clientes (código original)
+        TipoApontador atual = L->primeiro;
+        int linha = 6;
 
         gotoxy(10, linha++);
-        printf("Nome: %s", atual->info.nm_cliente);
+        printf("LISTA DE CLIENTES");
+        linha++;
 
-        gotoxy(10, linha++);
-        printf("Endereco: %s, %d", atual->info.ds_endereco, atual->info.nr_numero);
+        while (atual != NULL)
+        {
+            gotoxy(10, linha++);
+            printf("Codigo: %d", atual->info.cd_cliente);
 
-        gotoxy(10, linha++);
-        printf("Documento: %s", atual->info.nr_documento);
+            gotoxy(10, linha++);
+            printf("Nome: %s", atual->info.nm_cliente);
 
-        gotoxy(10, linha++);
-        printf("Cidade: %s/%s", atual->info.ds_cidade, atual->info.ds_uf);
+            gotoxy(10, linha++);
+            printf("Endereco: %s, %d", atual->info.ds_endereco, atual->info.nr_numero);
 
-        gotoxy(10, linha++);
-        printf("Telefone: %s", atual->info.nr_telefone);
+            gotoxy(10, linha++);
+            printf("Documento: %s", atual->info.nr_documento);
 
-        gotoxy(10, linha++);
-        printf("Data Cadastro: %s", atual->info.dt_cadastro);
+            gotoxy(10, linha++);
+            printf("Cidade: %s/%s", atual->info.ds_cidade, atual->info.ds_uf);
 
-        linha++; // Espaço entre registros
-        atual = atual->prox;
+            gotoxy(10, linha++);
+            printf("Telefone: %s", atual->info.nr_telefone);
+
+            linha++; // Espaço entre registros
+            atual = atual->prox;
+        }
     }
+    else if (opcao == 2)
+    {
+        // Buscar cliente por código
+        gotoxy(10, 6);
+        printf("Digite o codigo do cliente: ");
+        gotoxy(38, 6);
+        scanf("%d", &codigo);
+        fflush(stdin);
+
+        tela();
+
+        TipoApontador atual = L->primeiro;
+        int linha = 6;
+
+        while (atual != NULL)
+        {
+            if (atual->info.cd_cliente == codigo)
+            {
+                encontrou = 1;
+
+                gotoxy(10, linha++);
+                printf("DADOS DO CLIENTE %d", codigo);
+                linha++;
+
+                gotoxy(10, linha++);
+                printf("Codigo: %d", atual->info.cd_cliente);
+
+                gotoxy(10, linha++);
+                printf("Nome: %s", atual->info.nm_cliente);
+
+                gotoxy(10, linha++);
+                printf("Endereco: %s, %d", atual->info.ds_endereco, atual->info.nr_numero);
+
+                gotoxy(10, linha++);
+                printf("Documento: %s", atual->info.nr_documento);
+
+                gotoxy(10, linha++);
+                printf("Cidade: %s/%s", atual->info.ds_cidade, atual->info.ds_uf);
+
+                gotoxy(10, linha++);
+                printf("Telefone: %s", atual->info.nr_telefone);
+
+                break;
+            }
+            atual = atual->prox;
+        }
+
+        if (!encontrou)
+        {
+            gotoxy(10, 6);
+            printf("Cliente com codigo %d nao encontrado!", codigo);
+        }
+    }
+    else
+    {
+        gotoxy(10, 6);
+        printf("Opcao invalida!");
+    }
+
     getch();
 }
-
 void consultar_cliente(TipoLista *L)
 {
+    int opcao, codigo, encontrou = 0;
+
+    tela();
+    gotoxy(15, 3);
+    printf("CONSULTA DE CLIENTES");
+    gotoxy(10, 6);
+    printf("1 - Listar todos os clientes");
+    gotoxy(10, 8);
+    printf("2 - Buscar cliente por codigo");
+    gotoxy(10, 10);
+    printf("Opcao: ");
+    gotoxy(18, 10);
+    scanf("%d", &opcao);
+    fflush(stdin);
+
+    if (L->primeiro == NULL)
+    {
+        tela();
+        gotoxy(10, 7);
+        printf("Nenhum cliente cadastrado!");
+        getch();
+        return;
+    }
+
+    if (opcao == 2)
+    {
+        tela();
+        gotoxy(10, 7);
+        printf("Digite o codigo do cliente: ");
+        gotoxy(38, 7);
+        scanf("%d", &codigo);
+        fflush(stdin);
+    }
+
     int lin = 7;
     TipoApontador atual = L->primeiro;
 
-    if (atual == NULL)
-    {
-        tela();
-        gotoxy(10, lin);
-        printf("Nenhum cliente cadastrado!");
-        getch();
-        return;
-    }
-
-    // Ordenação poderia ser implementada aqui se necessário
-    // if (opc == 3) ordenar_por_codigo(L);
-    // else ordenar_por_nome(L);
-
     while (atual != NULL)
     {
+        if (opcao == 2 && atual->info.cd_cliente != codigo)
+        {
+            atual = atual->prox;
+            continue;
+        }
+
         if (lin == 7)
         {
             tela();
-            gotoxy(15, 03);
+            gotoxy(15, 3);
             printf("LISTA DE CLIENTES - DETALHADA");
-
-            gotoxy(02, 05);
-            printf("Cd  Nome        Endereco           Documento  Cidade/UF     Telefone");
-            gotoxy(02, 06);
-            printf("--  ----------  ------------------ ---------  ----------    -----------");
+            gotoxy(02, 5);
+            printf("Cd  Nome        Endereco              Documento      Cidade/UF       Telefone");
+            gotoxy(02, 6);
+            printf("--  ----------  ------------------    ---------      ---------          ------------");
         }
 
         gotoxy(02, lin);
@@ -295,13 +394,17 @@ void consultar_cliente(TipoLista *L)
         printf("%s, %d", atual->info.ds_endereco, atual->info.nr_numero);
         gotoxy(37, lin);
         printf("%s", atual->info.nr_documento);
-        gotoxy(48, lin);
+        gotoxy(56, lin);
         printf("%s/%s", atual->info.ds_cidade, atual->info.ds_uf);
-        gotoxy(62, lin);
+        gotoxy(70, lin);
         printf("%s", atual->info.nr_telefone);
 
+        encontrou = 1;
         lin++;
         atual = atual->prox;
+
+        if (opcao == 2)
+            break; // Se estiver buscando por código, sai após encontrar
 
         if (lin > 22)
         {
@@ -312,10 +415,122 @@ void consultar_cliente(TipoLista *L)
         }
     }
 
-    gotoxy(07, 23);
-    printf("                                                     ");
-    gotoxy(07, 23);
-    printf("Fim da lista. ");
+    if (opcao == 2 && !encontrou)
+    {
+        tela();
+        gotoxy(10, 7);
+        printf("Cliente com codigo %d nao encontrado!", codigo);
+    }
+    else
+    {
+        gotoxy(07, 23);
+        printf("                                                     ");
+        gotoxy(07, 23);
+        printf(opcao == 1 ? "Fim da lista. " : "Consulta finalizada. ");
+    }
+
+    getch();
+}
+void inserirNoMeio(TipoLista *L)
+{
+    // Contar quantos elementos existem na lista
+    int count = 0;
+    TipoApontador atual = L->primeiro;
+
+    while (atual != NULL)
+    {
+        count++;
+        atual = atual->prox;
+    }
+
+    // Se a lista estiver vazia ou com apenas 1 elemento, insere no final
+    if (count <= 1)
+    {
+        cadastrarCliente(L);
+        return;
+    }
+
+    // Calcular a posição do meio
+    int meio = count / 2;
+
+    // Alocar memória para o novo cliente
+    TipoApontador novo = (TipoApontador)malloc(sizeof(TipoItem));
+    if (novo == NULL)
+    {
+        gotoxy(10, 23);
+        printf("Erro ao alocar memoria");
+        getch();
+        return;
+    }
+
+    // Preencher os dados do novo cliente
+    tela_cliente();
+
+    // Codigo
+    gotoxy(42, 7);
+    scanf("%d", &novo->info.cd_cliente);
+    fflush(stdin);
+
+    // Nome
+    gotoxy(42, 9);
+    fgets(novo->info.nm_cliente, 50, stdin);
+    novo->info.nm_cliente[strcspn(novo->info.nm_cliente, "\n")] = 0;
+
+    // Endereco
+    gotoxy(42, 11);
+    fgets(novo->info.ds_endereco, 50, stdin);
+    novo->info.ds_endereco[strcspn(novo->info.ds_endereco, "\n")] = 0;
+
+    // Numero
+    gotoxy(42, 13);
+    scanf("%d", &novo->info.nr_numero);
+    fflush(stdin);
+
+    // Documento
+    gotoxy(42, 15);
+    fgets(novo->info.nr_documento, 50, stdin);
+    novo->info.nr_documento[strcspn(novo->info.nr_documento, "\n")] = 0;
+
+    // Cidade
+    gotoxy(42, 17);
+    fgets(novo->info.ds_cidade, 50, stdin);
+    novo->info.ds_cidade[strcspn(novo->info.ds_cidade, "\n")] = 0;
+
+    // UF
+    gotoxy(42, 19);
+    fgets(novo->info.ds_uf, 5, stdin);
+    novo->info.ds_uf[strcspn(novo->info.ds_uf, "\n")] = 0;
+
+    // Telefone
+    gotoxy(42, 21);
+    fgets(novo->info.nr_telefone, 15, stdin);
+    novo->info.nr_telefone[strcspn(novo->info.nr_telefone, "\n")] = 0;
+
+    // Encontrar a posição onde inserir
+    atual = L->primeiro;
+    for (int i = 0; i < meio - 1; i++)
+    {
+        atual = atual->prox;
+    }
+
+    // Inserir o novo nó na posição encontrada
+    novo->prox = atual->prox;
+    novo->ant = atual;
+
+    if (atual->prox != NULL)
+    {
+        atual->prox->ant = novo;
+    }
+    else
+    {
+        // Se estivermos inserindo no final
+        L->ultimo = novo;
+    }
+
+    atual->prox = novo;
+
+    gotoxy(10, 23);
+    printf("Cliente inserido no meio da lista com sucesso!");
     getch();
 }
 
@@ -330,10 +545,11 @@ void mostrarMenu()
     printf("2 - Listar clientes");
     gotoxy(10, 12);
     printf("3 - Consultar Cliente");
+    gotoxy(10, 14);
+    printf("4 - Inserir no meio da lista"); // Nova opção
     gotoxy(07, 23);
     printf("Opcao: ");
 }
-
 int main()
 {
     TipoLista L;
@@ -358,8 +574,10 @@ int main()
             listarClientes(&L);
             break;
         case 3:
-
             consultar_cliente(&L);
+            break;
+        case 4: // Novo caso
+            inserirNoMeio(&L);
             break;
         default:
             gotoxy(10, 23);
